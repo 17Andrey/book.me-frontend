@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
+import { loginApi } from '../api/auth';
 
 interface BookingPopupProps {
   open: boolean;

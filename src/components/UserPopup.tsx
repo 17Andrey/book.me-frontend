@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
+import { loginApi } from '../api/auth';
+import { useAuth } from '../contexts/AuthContext';
 
 interface UserPopupProps {
   open: boolean;
@@ -14,12 +16,14 @@ interface FormErrors {
   phone?: string;
 }
 
+
 const UserPopup = ({ open, onClose }: UserPopupProps) => {
   const [firstName, setFirstName] = useState('');
   const [phone, setPhone] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const { login } = useAuth();
 
   useEffect(() => {
     if (open) {
@@ -63,6 +67,7 @@ const UserPopup = ({ open, onClose }: UserPopupProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
+      loginApi(phone, firstName).then((response) => {console.log(response); login(response.access_token, response.user)}).catch((error) => {console.log(error)});
       resetForm();
       onClose();
     } else {

@@ -12,6 +12,7 @@ import rest5 from '../assets/img/rest5.jpg';
 import rest6 from '../assets/img/rest6.jpg';
 import restaurantInterior from '../assets/img/restaurant-interior.jpg';
 import { AnimatePresence, motion } from "framer-motion";
+import { getRestaurants } from '../api/restaurants';
 
 interface Restaurant {
   id: number;
@@ -24,79 +25,81 @@ interface Restaurant {
   metro?: string;
 }
 
-const restaurants: Restaurant[] = [
-  {
-    id: 1,
-    name: 'GRILL AND CHILL',
-    image: rest1,
-    seats: 12,
-    address: 'ул. 8 Марта, д. 10',
-    cuisines: ['Европейская'],
-    price: 1,
-    metro: 'Европейская',
-  },
-  {
-    id: 2,
-    name: 'PASHTET',
-    image: rest2,
-    seats: 14,
-    address: 'ул. Толмачева, д. 23',
-    cuisines: ['Европейская', 'Русская'],
-    price: 2,
-    metro: '',
-  },
-  {
-    id: 3,
-    name: 'КАК У ТЁЩИ',
-    image: rest3,
-    seats: 8,
-    address: 'ул. Малышева, д. 17',
-    cuisines: ['Европейская', 'Русская', 'Грузинская'],
-    price: 3,
-    metro: '',
-  },
-  {
-    id: 4,
-    name: 'CARBONARA',
-    image: rest4,
-    seats: 10,
-    address: 'просп. Ленина, 25',
-    cuisines: ['Итальянская'],
-    price: 2,
-    metro: '',
-  },
-  {
-    id: 5,
-    name: 'GARGULIA',
-    image: rest5,
-    seats: 16,
-    address: 'ул. Энгельса, д. 7',
-    cuisines: ['Французская', 'Европейская'],
-    price: 1,
-    metro: '',
-  },
-  {
-    id: 6,
-    name: 'Claude Monet',
-    image: rest6,
-    seats: 14,
-    address: 'ул. Розы Люксембург, д. 49',
-    cuisines: ['Французская'],
-    price: 3,
-    metro: '',
-  },
-];
+// const restaurants: Restaurant[] = [
+//   {
+//     id: 1,
+//     name: 'GRILL AND CHILL',
+//     image: rest1,
+//     seats: 12,
+//     address: 'ул. 8 Марта, д. 10',
+//     cuisines: ['Европейская'],
+//     price: 1,
+//     metro: 'Европейская',
+//   },
+//   {
+//     id: 2,
+//     name: 'PASHTET',
+//     image: rest2,
+//     seats: 14,
+//     address: 'ул. Толмачева, д. 23',
+//     cuisines: ['Европейская', 'Русская'],
+//     price: 2,
+//     metro: '',
+//   },
+//   {
+//     id: 3,
+//     name: 'КАК У ТЁЩИ',
+//     image: rest3,
+//     seats: 8,
+//     address: 'ул. Малышева, д. 17',
+//     cuisines: ['Европейская', 'Русская', 'Грузинская'],
+//     price: 3,
+//     metro: '',
+//   },
+//   {
+//     id: 4,
+//     name: 'CARBONARA',
+//     image: rest4,
+//     seats: 10,
+//     address: 'просп. Ленина, 25',
+//     cuisines: ['Итальянская'],
+//     price: 2,
+//     metro: '',
+//   },
+//   {
+//     id: 5,
+//     name: 'GARGULIA',
+//     image: rest5,
+//     seats: 16,
+//     address: 'ул. Энгельса, д. 7',
+//     cuisines: ['Французская', 'Европейская'],
+//     price: 1,
+//     metro: '',
+//   },
+//   {
+//     id: 6,
+//     name: 'Claude Monet',
+//     image: rest6,
+//     seats: 14,
+//     address: 'ул. Розы Люксембург, д. 49',
+//     cuisines: ['Французская'],
+//     price: 3,
+//     metro: '',
+//   },
+// ];
 
   // const buttonStyle =
   //   'bg-black/10 text-white border border-white/20 rounded-lg text-lg px-8 py-3 font-normal cursor-pointer shadow transition hover:bg-black/70';
 
 const Home = () => {
   const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(1);
   const restaurantsRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const [isHover, setIsHover] = useState(false);
   const [showHeader, setShowHeader] = useState(false);
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,7 +111,18 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    getRestaurants(page).then((data) => {
+      setRestaurants(data.data);
+      setMaxPage(data.totalPages);
+    });
+  }, [page]);
+
+
   const handlePageChange = (value: number) => {
+    getRestaurants(value).then((data) => {
+      setRestaurants(data.data);
+    });
     setPage(value);
   };
 
@@ -182,7 +196,7 @@ const Home = () => {
           </div>
           {/* Пагинация (пример без MUI) */}
           <div className="flex justify-center mt-8 gap-2">
-            {[1, 2, 3].map((num) => (
+            {Array.from({ length: maxPage }, (_, index) => index + 1).map((num) => (
               <button
                 key={num}
                 className={`w-9 h-9 rounded-full border text-lg font-medium transition ${

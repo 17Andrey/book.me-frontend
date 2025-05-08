@@ -60,7 +60,7 @@ const RestaurantCard = ({ restaurant, onClick }: RestaurantCardProps) => {
         </div>
         <div className="flex items-center gap-2">
           <HatIcon className="w-4 h-4" />
-          <span className="text-[15px] text-neutral-500">{(restaurant.cuisines || []).join(', ')}</span>
+          <span className="text-[15px] text-neutral-500">{restaurant.cuisines}</span>
         </div>
       </div>
     </div>
