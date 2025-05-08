@@ -3,12 +3,14 @@ import { useState, useRef, useEffect } from 'react';
 import RestaurantCard from '../components/RestaurantCard';
 import Header from '../components/Header';
 import BookingPopup from '../components/BookingPopup';
+
 import rest1 from '../assets/img/rest1.jpg';
 import rest2 from '../assets/img/rest2.jpg';
 import rest3 from '../assets/img/rest3.jpg';
 import rest4 from '../assets/img/rest4.jpg';
 import rest5 from '../assets/img/rest5.jpg';
 import rest6 from '../assets/img/rest6.jpg';
+import restaurantInterior from '../assets/img/restaurant-interior.jpg';
 import { AnimatePresence, motion } from "framer-motion";
 
 interface Restaurant {
@@ -142,7 +144,7 @@ const Home = () => {
       <div
         ref={heroRef}
         className="h-screen flex items-center justify-center relative bg-cover bg-center"
-        style={{ backgroundImage: `url('../assets/img/restaurant-interior.jpg')` }}
+        style={{ backgroundImage: `url(${restaurantInterior})` }}
       >
         <div className="relative text-center text-white bg-black/30 rounded-2xl px-4 md:px-16 py-8 max-w-3xl mx-auto flex flex-col items-center justify-center">
           <span className="text-lg font-normal mb-2 tracking-wide">ЛУЧШИЕ РЕСТОРАНЫ ЕКАТЕРИНБУРГА</span>
