@@ -13,7 +13,6 @@ import rest4 from '../assets/img/rest4.jpg';
 import rest5 from '../assets/img/rest5.jpg';
 import rest6 from '../assets/img/rest6.jpg';
 import restaurantInterior from '../assets/img/restaurant-interior.jpg';
-import { AnimatePresence, motion } from "framer-motion";
 import { getRestaurants } from '../api/restaurants';
 
 interface Restaurant {
@@ -26,72 +25,6 @@ interface Restaurant {
   price: number;
   metro?: string;
 }
-
-// const restaurants: Restaurant[] = [
-//   {
-//     id: 1,
-//     name: 'GRILL AND CHILL',
-//     image: rest1,
-//     seats: 12,
-//     address: 'ул. 8 Марта, д. 10',
-//     cuisines: ['Европейская'],
-//     price: 1,
-//     metro: 'Европейская',
-//   },
-//   {
-//     id: 2,
-//     name: 'PASHTET',
-//     image: rest2,
-//     seats: 14,
-//     address: 'ул. Толмачева, д. 23',
-//     cuisines: ['Европейская', 'Русская'],
-//     price: 2,
-//     metro: '',
-//   },
-//   {
-//     id: 3,
-//     name: 'КАК У ТЁЩИ',
-//     image: rest3,
-//     seats: 8,
-//     address: 'ул. Малышева, д. 17',
-//     cuisines: ['Европейская', 'Русская', 'Грузинская'],
-//     price: 3,
-//     metro: '',
-//   },
-//   {
-//     id: 4,
-//     name: 'CARBONARA',
-//     image: rest4,
-//     seats: 10,
-//     address: 'просп. Ленина, 25',
-//     cuisines: ['Итальянская'],
-//     price: 2,
-//     metro: '',
-//   },
-//   {
-//     id: 5,
-//     name: 'GARGULIA',
-//     image: rest5,
-//     seats: 16,
-//     address: 'ул. Энгельса, д. 7',
-//     cuisines: ['Французская', 'Европейская'],
-//     price: 1,
-//     metro: '',
-//   },
-//   {
-//     id: 6,
-//     name: 'Claude Monet',
-//     image: rest6,
-//     seats: 14,
-//     address: 'ул. Розы Люксембург, д. 49',
-//     cuisines: ['Французская'],
-//     price: 3,
-//     metro: '',
-//   },
-// ];
-
-  // const buttonStyle =
-  //   'bg-black/10 text-white border border-white/20 rounded-lg text-lg px-8 py-3 font-normal cursor-pointer shadow transition hover:bg-black/70';
 
 const Home = () => {
   const [page, setPage] = useState(1);
@@ -122,7 +55,6 @@ const Home = () => {
     });
   }, [page]);
 
-
   const handlePageChange = (value: number) => {
     getRestaurants(value).then((data) => {
       setRestaurants(data.data);
@@ -148,19 +80,11 @@ const Home = () => {
 
   return (
     <div>
-      <AnimatePresence>
-        {showHeader && (
-          <motion.header
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-0 left-0 w-full z-30"
-          >
-            <Header onLogoClick={scrollToHero} onProfileClick={() => {}} />
-          </motion.header>
-        )}
-      </AnimatePresence>
+      {showHeader && (
+        <header className="fixed top-0 left-0 w-full z-30">
+          <Header onLogoClick={scrollToHero} onProfileClick={() => {}} />
+        </header>
+      )}
      
       {/* Hero Section */}
       <div
@@ -192,7 +116,7 @@ const Home = () => {
       >
         <div className="max-w-7xl mx-auto w-full">
           <h2 className="text-3xl font-bold text-center mb-8 text-neutral-900 font-sans">Рестораны Екатеринбурга</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 min-h-[400px]">
             {restaurants.map((restaurant) => (
               <div key={restaurant.id} className="flex justify-center items-stretch">
                 <RestaurantCard 
@@ -202,12 +126,12 @@ const Home = () => {
               </div>
             ))}
           </div>
-          {/* Пагинация (пример без MUI) */}
+          {/* Пагинация */}
           <div className="flex justify-center mt-8 gap-2">
             {Array.from({ length: maxPage }, (_, index) => index + 1).map((num) => (
               <button
                 key={num}
-                className={`w-9 h-9 rounded-full border text-lg font-medium transition ${
+                className={`w-9 h-9 rounded-full border text-lg font-medium transition cursor-pointer ${
                   page === num
                     ? 'bg-black text-white border-black'
                     : 'bg-white text-black border-gray-300 hover:bg-gray-100'
