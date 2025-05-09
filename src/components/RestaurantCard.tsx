@@ -53,7 +53,7 @@ const RestaurantCard = ({ restaurant, onClick }: RestaurantCardProps) => {
             ))}
           </span>
         </div>
-        <span className="text-[15px] text-neutral-500 mb-0.5">{restaurant.seats} посадочных мест</span>
+        {/* <span className="text-[15px] text-neutral-500 mb-0.5">{restaurant.seats} посадочных мест</span> */}
         <div className="flex items-center gap-2 mb-0.5">
           <GlobeIcon className="w-4 h-4" />
           <span className="text-[15px] text-neutral-500">{restaurant.address}</span>
