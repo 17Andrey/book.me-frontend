@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from 'react';
 import RestaurantCard from '../components/RestaurantCard';
 import Header from '../components/Header';
 import BookingPopup from '../components/BookingPopup';
+import UserPopup from '../components/UserPopup';
+import { useAuth } from '../contexts/AuthContext';
 
 import rest1 from '../assets/img/rest1.jpg';
 import rest2 from '../assets/img/rest2.jpg';
@@ -100,6 +102,8 @@ const Home = () => {
   const [showHeader, setShowHeader] = useState(false);
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const { isAuthenticated } = useAuth();
+  const [showUserPopup, setShowUserPopup] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -135,7 +139,11 @@ const Home = () => {
   };
 
   const handleRestaurantClick = (restaurant: Restaurant) => {
-    setSelectedRestaurant(restaurant);
+    if (!isAuthenticated) {
+      setShowUserPopup(true);
+    } else {
+      setSelectedRestaurant(restaurant);
+    }
   };
 
   return (
@@ -214,8 +222,12 @@ const Home = () => {
       </div>
 
       <BookingPopup 
-        open={!!selectedRestaurant} 
+        open={!!selectedRestaurant}
         onClose={() => setSelectedRestaurant(null)} 
+        restaurantId={selectedRestaurant?.id||0}      />
+      <UserPopup
+        open={showUserPopup}
+        onClose={() => setShowUserPopup(false)}
       />
     </div>
   );

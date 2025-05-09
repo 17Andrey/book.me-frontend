@@ -29,7 +29,7 @@ const RestaurantCard = ({ restaurant, onClick }: RestaurantCardProps) => {
       onClick={onClick}
     >
       <img
-        src={restaurant.image}
+        src={'http://localhost:3000'+ restaurant.image}
         alt={restaurant.name}
         className="w-full h-[160px] object-cover"
       />

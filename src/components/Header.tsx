@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { PersonIcon } from '@radix-ui/react-icons';
 import { useAuth } from '../contexts/AuthContext';
 import UserPopup from './UserPopup';
+import { getBookings } from '../api/booking';
+import BookingList from './BookingList';
 
 interface HeaderProps {
   onLogoClick: () => void;
@@ -11,11 +13,14 @@ interface HeaderProps {
 
 const Header = ({ onLogoClick }: HeaderProps) => {
   const [showUserPopup, setShowUserPopup] = useState(false);
+  const [showBookingList, setShowBookingList] = useState(false);
   const { isAuthenticated, user } = useAuth();
 
   const handleProfileClick = () => {
     if (!isAuthenticated) {
       setShowUserPopup(true);
+    } else {
+      setShowBookingList(true);
     }
   };
 
@@ -42,6 +47,10 @@ const Header = ({ onLogoClick }: HeaderProps) => {
       <UserPopup 
         open={showUserPopup} 
         onClose={() => setShowUserPopup(false)} 
+      />
+      <BookingList
+        open={showBookingList}
+        onClose={() => setShowBookingList(false)}
       />
     </>
   );

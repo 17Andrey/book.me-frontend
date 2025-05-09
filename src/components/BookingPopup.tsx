@@ -2,27 +2,22 @@ import { useState, useEffect, useRef } from 'react';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
-import { loginApi } from '../api/auth';
+import { createBooking } from '../api/booking';
 
 interface BookingPopupProps {
   open: boolean;
   onClose: () => void;
+  restaurantId: number;
 }
 
 interface FormErrors {
   date?: string;
   time?: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
 }
 
-const BookingPopup = ({ open, onClose }: BookingPopupProps) => {
+const BookingPopup = ({ open, onClose, restaurantId }: BookingPopupProps) => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [phone, setPhone] = useState('');
   const [guests, setGuests] = useState(2);
   const prevGuests = useRef(guests);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -48,9 +43,6 @@ const BookingPopup = ({ open, onClose }: BookingPopupProps) => {
   const resetForm = () => {
     setDate('');
     setTime('');
-    setFirstName('');
-    setLastName('');
-    setPhone('');
     setGuests(2);
     setErrors({});
     setShowError(false);
@@ -93,18 +85,6 @@ const BookingPopup = ({ open, onClose }: BookingPopupProps) => {
       }
     }
 
-    if (!firstName || firstName.length < 2) {
-      newErrors.firstName = 'Имя должно содержать минимум 2 символа';
-    }
-
-    if (!lastName || lastName.length < 2) {
-      newErrors.lastName = 'Фамилия должна содержать минимум 2 символа';
-    }
-
-    if (!phone || phone.length !== 11) {
-      newErrors.phone = 'Введите корректный номер телефона';
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -120,6 +100,13 @@ const BookingPopup = ({ open, onClose }: BookingPopupProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
+      createBooking({
+        time: time,
+        date: date,
+        guests: guests,
+        userId: JSON.parse(localStorage.getItem('user')!).id,
+        restaurantId: restaurantId
+      });
       setShowSuccess(true);
       resetForm();
       onClose();
@@ -152,16 +139,6 @@ const BookingPopup = ({ open, onClose }: BookingPopupProps) => {
     }
     
     setTime(value);
-  };
-
-  const handleNameChange = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^a-zA-Zа-яА-ЯёЁ-]/g, '');
-    setter(value);
-  };
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 11) value = value.slice(0, 11);
-    setPhone(value);
   };
 
   return (
@@ -226,40 +203,6 @@ const BookingPopup = ({ open, onClose }: BookingPopupProps) => {
                       maxLength={5}
                     />
                     {errors.time && <span className="text-sm text-red-500">{errors.time}</span>}
-                  </label>
-                  <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700">Имя</span>
-                    <input
-                      type="text"
-                      placeholder="Имя"
-                      className={`border ${errors.firstName ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 placeholder:text-gray-400`}
-                      value={firstName}
-                      onChange={handleNameChange(setFirstName)}
-                    />
-                    {errors.firstName && <span className="text-sm text-red-500">{errors.firstName}</span>}
-                  </label>
-                  <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700">Фамилия</span>
-                    <input
-                      type="text"
-                      placeholder="Фамилия"
-                      className={`border ${errors.lastName ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 placeholder:text-gray-400`}
-                      value={lastName}
-                      onChange={handleNameChange(setLastName)}
-                    />
-                    {errors.lastName && <span className="text-sm text-red-500">{errors.lastName}</span>}
-                  </label>
-                  <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium text-gray-700">Телефон</span>
-                    <input
-                      type="text"
-                      placeholder="89999999999"
-                      className={`border ${errors.phone ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 placeholder:text-gray-400`}
-                      value={phone}
-                      onChange={handlePhoneChange}
-                      maxLength={11}
-                    />
-                    {errors.phone && <span className="text-sm text-red-500">{errors.phone}</span>}
                   </label>
                   <label className="flex flex-col gap-1">
                     <span className="text-sm font-medium text-gray-700">Количество гостей</span>
