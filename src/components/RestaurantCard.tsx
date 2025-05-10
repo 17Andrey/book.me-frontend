@@ -9,7 +9,7 @@ interface Restaurant {
   seats: number;
   address: string;
   cuisines: string[];
-  price: number; // 1, 2, 3
+  price: number;
   metro?: string;
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { PersonIcon } from '@radix-ui/react-icons';
+import { PersonIcon, ExitIcon } from '@radix-ui/react-icons';
 import { useAuth } from '../contexts/AuthContext';
 import UserPopup from './UserPopup';
 import { getBookings } from '../api/booking';
@@ -14,7 +14,7 @@ interface HeaderProps {
 const Header = ({ onLogoClick }: HeaderProps) => {
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [showBookingList, setShowBookingList] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const handleProfileClick = () => {
     if (!isAuthenticated) {
@@ -34,13 +34,24 @@ const Header = ({ onLogoClick }: HeaderProps) => {
           >
             Book.me
           </button>
-          <button
-            onClick={handleProfileClick}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-100 transition cursor-pointer"
-            aria-label="Профиль"
-          >
-            <PersonIcon width={24} height={24} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleProfileClick}
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-100 transition cursor-pointer"
+              aria-label="Профиль"
+            >
+              <PersonIcon width={24} height={24} />
+            </button>
+            {isAuthenticated && (
+              <button
+                onClick={logout}
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-100 transition cursor-pointer text-gray-700"
+                aria-label="Выйти"
+              >
+                <ExitIcon width={24} height={24} />
+              </button>
+            )}
+          </div>
         </div>
       </header>
 

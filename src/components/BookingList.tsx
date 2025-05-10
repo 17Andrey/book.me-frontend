@@ -95,7 +95,7 @@ const BookingList: React.FC<BookingListProps> = ({ open, onClose }) => {
                       <AlertDialog.Root>
                         <AlertDialog.Trigger asChild>
                           <button
-                            className="p-2 rounded-full hover:bg-red-100 text-red-600 transition"
+                            className="p-2 rounded-full hover:bg-red-100 text-red-600 transition cursor-pointer"
                             aria-label="Удалить бронирование"
                             disabled={deletingId === b.id}
                           >
